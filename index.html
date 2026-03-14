@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>QuickQR — QR Generator</title>
+    <style>
+      :root {
+        --bg: #0f172a; /* dark navy */
+        --card: #0b1220a8;
+        --glass: rgba(255, 255, 255, 0.06);
+        --accent: #6ee7b7;
+        --muted: #94a3b8;
+        --card-white: rgba(255, 255, 255, 0.03);
+        --text: #e6eef8;
+        --radius: 14px;
+        --glass-border: rgba(255, 255, 255, 0.06);
+      }
+
+      /* Light theme variables (swapped in JS) */
+      .light {
+        --bg: #f4f7fb;
+        --card: rgba(255, 255, 255, 0.9);
+        --glass: rgba(255, 255, 255, 0.7);
+        --accent: #2563eb;
+        --muted: #475569;
+        --card-white: rgba(0, 0, 0, 0.03);
+        --text: #0b1220;
+        --glass-border: rgba(0, 0, 0, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial;
+        color: var(--text);
+        background: linear-gradient(180deg, var(--bg) 0%, #071029 100%);
+      }
+
+      .wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .grid {
+        width: 100%;
+        max-width: 1100px;
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 28px;
+      }
+
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        border-radius: var(--radius);
+        padding: 22px;
+        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(8px) saturate(120%);
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .brand {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--accent), #34d399);
+        font-weight: 700;
+        color: #022;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
+      p.lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* form */
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .input-row {
+        display: flex;
+        gap: 12px;
+      }
+      input[type='text'] {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        background: transparent;
+        color: var(--text);
+        outline: none;
+        font-size: 15px;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        background: var(--accent);
+        color: #052;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn.secondary {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: var(--text);
+      }
+      label.small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* controls */
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .control {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .range {
+        width: 160px;
+      }
+
+      /* preview column */
+      .preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      canvas {
+        background: var(--card-white);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      /* history */
+      .history {
+        margin-top: 14px;
+      }
+      .history-list {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .history-item {
+        width: 56px;
+        height: 56px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        background: var(--glass);
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      footer {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      /* responsive */
+      @media (max-width: 920px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .preview {
+          order: -1;
+        }
+      }
+
+      /* small touches */
+      .hint {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .pill {
+        padding: 6px 10px;
+        background: var(--glass);
+        border-radius: 999px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+      }
+
+      /* toggle */
+      .toggle {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .switch {
+        width: 46px;
+        height: 26px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 3px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .knob {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--card);
+        transition: transform 0.22s;
+      }
+      .switch.on {
+        background: linear-gradient(90deg, var(--accent), #34d399);
+      }
+      .switch.on .knob {
+        transform: translateX(20px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="grid">
+        <!-- LEFT: main form -->
+        <div class="card" role="region" aria-label="QR generator controls">
+          <header>
+            <div class="brand">
+              <div class="logo">QR</div>
+              <div>
+                <h1>QuickQR</h1>
+                <p class="lead">
+                  Paste your link, tweak style, and download a high-quality QR.
+                </p>
+              </div>
+            </div>
+
+            <div class="toggle" title="Toggle theme">
+              <div id="themeLabel" class="hint">Dark</div>
+              <div
+                id="themeSwitch"
+                class="switch"
+                role="button"
+                aria-pressed="false"
+                tabindex="0"
+              >
+                <div class="knob"></div>
+              </div>
+            </div>
+          </header>
+
+          <form id="qrForm" onsubmit="return false;">
+            <label class="small" for="urlInput">URL / Text</label>
+            <div class="input-row">
+              <input
+                id="urlInput"
+                type="text"
+                placeholder="https://example.com or any text"
+                aria-label="URL or text to encode"
+                required
+              />
+              <button id="genBtn" class="btn" aria-label="Generate QR">
+                Generate
+              </button>
+            </div>
+
+            <div class="controls" aria-hidden="false">
+              <div class="control">
+                <label class="small"
+                  >Size: <span id="sizeVal">300</span>px</label
+                >
+                <input
+                  id="sizeRange"
+                  class="range"
+                  type="range"
+                  min="120"
+                  max="800"
+                  value="300"
+                />
+              </div>
+
+              <div class="control">
+                <label class="small">Foreground</label>
+                <input
+                  id="fgColor"
+                  type="color"
+                  value="#000000"
+                  aria-label="QR foreground color"
+                />
+              </div>
+
+              <div class="control">
+                <label class="small">Background</label>
+                <input
+                  id="bgColor"
+                  type="color"
+                  value="#ffffff"
+                  aria-label="QR background color"
+                />
+              </div>
+
+              <div class="control">
+                <label class="small">Logo (optional)</label>
+                <input
+                  id="logoFile"
+                  type="file"
+                  accept="image/*"
+                  aria-label="Upload logo"
+                />
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px">
+              <button id="downloadBtn" class="btn secondary" disabled>
+                Download PNG
+              </button>
+              <button id="clearBtn" class="btn secondary" type="button">
+                Clear
+              </button>
+              <div style="flex: 1"></div>
+              <button id="historyClearBtn" class="btn secondary" type="button">
+                Clear History
+              </button>
+            </div>
+
+            <div class="hint" style="margin-top: 10px">
+              Tip: Use <span class="pill">https://</span> links for best
+              scanning reliability. Save history will store latest QR images
+              locally in your browser.
+            </div>
+
+            <div class="history" aria-live="polite">
+              <label class="small">History</label>
+              <div id="historyList" class="history-list"></div>
+            </div>
+          </form>
+
+          <footer>
+            Made for <strong>Chetan</strong> • Host on GitHub Pages / Vercel
+          </footer>
+        </div>
+
+        <!-- RIGHT: preview -->
+        <div class="preview card" role="region" aria-label="QR preview">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <div class="hint">Preview</div>
+            <canvas
+              id="qrCanvas"
+              width="300"
+              height="300"
+              aria-label="QR preview canvas"
+            ></canvas>
+          </div>
+
+          <div class="actions">
+            <button id="openBtn" class="btn secondary" disabled>
+              Open Image
+            </button>
+            <button id="downloadBtn2" class="btn" disabled>Download</button>
+          </div>
+
+          <div class="hint" style="margin-top: 6px">
+            You can click "Download" to save a PNG. Logo will be centered and
+            scaled automatically.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- helpers ---
+      const $ = (id) => document.getElementById(id);
+      const urlInput = $('urlInput');
+      const genBtn = $('genBtn');
+      const sizeRange = $('sizeRange');
+      const sizeVal = $('sizeVal');
+      const fgColor = $('fgColor');
+      const bgColor = $('bgColor');
+      const logoFile = $('logoFile');
+      const qrCanvas = $('qrCanvas');
+      const downloadBtn = $('downloadBtn');
+      const downloadBtn2 = $('downloadBtn2');
+      const openBtn = $('openBtn');
+      const historyList = $('historyList');
+      const clearBtn = $('clearBtn');
+      const historyClearBtn = $('historyClearBtn');
+
+      // theme toggle
+      const themeSwitch = $('themeSwitch');
+      const themeLabel = $('themeLabel');
+      const root = document.documentElement;
+      let isLight = false;
+
+      function applyTheme() {
+        if (isLight) {
+          document.body.classList.add('light');
+          themeSwitch.classList.add('on');
+          themeLabel.textContent = 'Light';
+          themeSwitch.setAttribute('aria-pressed', 'true');
+        } else {
+          document.body.classList.remove('light');
+          themeSwitch.classList.remove('on');
+          themeLabel.textContent = 'Dark';
+          themeSwitch.setAttribute('aria-pressed', 'false');
+        }
+      }
+      themeSwitch.addEventListener('click', () => {
+        isLight = !isLight;
+        applyTheme();
+      });
+      themeSwitch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          isLight = !isLight;
+          applyTheme();
+          e.preventDefault();
+        }
+      });
+      applyTheme();
+
+      // update size label
+      sizeRange.addEventListener('input', () => {
+        sizeVal.textContent = sizeRange.value;
+        qrCanvas.width = qrCanvas.height = parseInt(sizeRange.value);
+      });
+
+      function dataURLFromAPI(text, size, fg, bg) {
+        // qrserver expects hex without # for color params
+        const fgHex = fg.replace('#', '');
+        const bgHex = bg.replace('#', '');
+        const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&color=${fgHex}&bgcolor=${bgHex}&margin=0&data=${encodeURIComponent(text)}`;
+        return url;
+      }
+
+      async function loadImage(src) {
+        return new Promise((res, rej) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => res(img);
+          img.onerror = (e) => rej(e);
+          img.src = src;
+        });
+      }
+
+      async function generate() {
+        const text = urlInput.value.trim();
+        if (!text) {
+          alert('Please enter a URL or text');
+          urlInput.focus();
+          return;
+        }
+        const size = parseInt(sizeRange.value);
+        const fg = fgColor.value;
+        const bg = bgColor.value;
+        const apiURL = dataURLFromAPI(text, size, fg, bg);
+
+        try {
+          const qrImg = await loadImage(apiURL);
+          // draw on canvas
+          const ctx = qrCanvas.getContext('2d');
+          qrCanvas.width = qrCanvas.height = size;
+          // fill background
+          ctx.fillStyle = bg;
+          ctx.fillRect(0, 0, size, size);
+          // draw QR
+          ctx.drawImage(qrImg, 0, 0, size, size);
+
+          // if logo provided, draw it centered
+          if (logoFile.files && logoFile.files[0]) {
+            const file = logoFile.files[0];
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+              try {
+                const logoImg = await loadImage(ev.target.result);
+                // scale logo to 18% of size (tweakable)
+                const logoSize = Math.floor(size * 0.18);
+                const x = (size - logoSize) / 2;
+                const y = (size - logoSize) / 2;
+
+                // draw a white rounded background for logo for contrast
+                const r = 8; // corner radius
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                roundRect(
+                  ctx,
+                  x - 6,
+                  y - 6,
+                  logoSize + 12,
+                  logoSize + 12,
+                  r + 4,
+                );
+                ctx.fill();
+
+                // draw the logo
+                ctx.drawImage(logoImg, x, y, logoSize, logoSize);
+
+                finishAndSaveToHistory(text);
+              } catch (err) {
+                console.error('logo load failed', err);
+                finishAndSaveToHistory(text);
+              }
+            };
+            reader.readAsDataURL(file);
+          } else {
+            finishAndSaveToHistory(text);
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Failed to generate QR — check console for details');
+        }
+      }
+
+      function finishAndSaveToHistory(text) {
+        // enable download buttons
+        downloadBtn.disabled = false;
+        downloadBtn2.disabled = false;
+        openBtn.disabled = false;
+        // save small thumbnail + text in localStorage
+        try {
+          const dataURL = qrCanvas.toDataURL('image/png');
+          const item = { text, ts: Date.now(), img: dataURL };
+          const hist = JSON.parse(
+            localStorage.getItem('quickqr.history') || '[]',
+          );
+          hist.unshift(item);
+          // limit to 12 items
+          localStorage.setItem(
+            'quickqr.history',
+            JSON.stringify(hist.slice(0, 12)),
+          );
+          renderHistory();
+        } catch (e) {
+          console.warn('history save failed', e);
+        }
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      // download handler
+      function downloadImage(filename = 'quickqr.png') {
+        const a = document.createElement('a');
+        a.href = qrCanvas.toDataURL('image/png');
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
+      // open in new tab
+      function openImageInTab() {
+        const data = qrCanvas.toDataURL('image/png');
+        const w = window.open('about:blank', '_blank');
+        if (w) {
+          w.document.write(`<img src="${data}" alt="QR"/>`);
+          w.document.title = 'QuickQR — QR Image';
+        } else alert('Popup blocked — allow popups to preview.');
+      }
+
+      // history UI
+      function renderHistory() {
+        historyList.innerHTML = '';
+        const hist = JSON.parse(
+          localStorage.getItem('quickqr.history') || '[]',
+        );
+        hist.forEach((it, idx) => {
+          const el = document.createElement('div');
+          el.className = 'history-item';
+          el.title = it.text;
+          el.innerHTML = `<img src="${it.img}" style="width:100%;height:100%;object-fit:cover">`;
+          el.addEventListener('click', () => {
+            // populate value and show on canvas
+            urlInput.value = it.text;
+            // draw it into canvas
+            const img = new Image();
+            img.src = it.img;
+            img.onload = () => {
+              const ctx = qrCanvas.getContext('2d');
+              qrCanvas.width = qrCanvas.height = img.width;
+              ctx.drawImage(img, 0, 0);
+              downloadBtn.disabled = false;
+              downloadBtn2.disabled = false;
+              openBtn.disabled = false;
+            };
+          });
+
+          historyList.appendChild(el);
+        });
+      }
+
+      // clear functions
+      function clearCanvas() {
+        const ctx = qrCanvas.getContext('2d');
+        ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
+        downloadBtn.disabled = true;
+        downloadBtn2.disabled = true;
+        openBtn.disabled = true;
+      }
+      function clearForm() {
+        urlInput.value = '';
+        logoFile.value = '';
+        fgColor.value = '#000000';
+        bgColor.value = '#ffffff';
+        sizeRange.value = 300;
+        sizeVal.textContent = 300;
+        clearCanvas();
+      }
+      function clearHistory() {
+        localStorage.removeItem('quickqr.history');
+        renderHistory();
+      }
+
+      // wire buttons
+      genBtn.addEventListener('click', generate);
+      downloadBtn.addEventListener('click', () => downloadImage('quickqr.png'));
+      downloadBtn2.addEventListener('click', () =>
+        downloadImage('quickqr.png'),
+      );
+      openBtn.addEventListener('click', openImageInTab);
+      clearBtn.addEventListener('click', clearForm);
+      historyClearBtn.addEventListener('click', () => {
+        if (confirm('Clear saved history?')) clearHistory();
+      });
+
+      // init
+      (function () {
+        sizeVal.textContent = sizeRange.value;
+        qrCanvas.width = qrCanvas.height = parseInt(sizeRange.value);
+        renderHistory();
+      })();
+
+      // small accessibility: enter to generate
+      urlInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          generate();
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>
