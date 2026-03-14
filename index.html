@@ -1,697 +1,353 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>QuickQR — QR Generator</title>
-    <style>
-      :root {
-        --bg: #0f172a; /* dark navy */
-        --card: #0b1220a8;
-        --glass: rgba(255, 255, 255, 0.06);
-        --accent: #6ee7b7;
-        --muted: #94a3b8;
-        --card-white: rgba(255, 255, 255, 0.03);
-        --text: #e6eef8;
-        --radius: 14px;
-        --glass-border: rgba(255, 255, 255, 0.06);
-      }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QRForge — Professional QR Code Generator</title>
+    <meta
+      name="description"
+      content="Generate beautiful, customizable QR codes instantly. Free, fast, and privacy-first."
+    />
 
-      /* Light theme variables (swapped in JS) */
-      .light {
-        --bg: #f4f7fb;
-        --card: rgba(255, 255, 255, 0.9);
-        --glass: rgba(255, 255, 255, 0.7);
-        --accent: #2563eb;
-        --muted: #475569;
-        --card-white: rgba(0, 0, 0, 0.03);
-        --text: #0b1220;
-        --glass-border: rgba(0, 0, 0, 0.06);
-      }
+    <!-- Google Fonts: Display + Body pairing -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
 
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        font-family:
-          Inter,
-          system-ui,
-          -apple-system,
-          'Segoe UI',
-          Roboto,
-          'Helvetica Neue',
-          Arial;
-        color: var(--text);
-        background: linear-gradient(180deg, var(--bg) 0%, #071029 100%);
-      }
+    <!-- QRCode.js library from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-      .wrap {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 20px;
-      }
-
-      .grid {
-        width: 100%;
-        max-width: 1100px;
-        display: grid;
-        grid-template-columns: 1fr 420px;
-        gap: 28px;
-      }
-
-      .card {
-        background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.02),
-          rgba(255, 255, 255, 0.01)
-        );
-        border-radius: var(--radius);
-        padding: 22px;
-        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
-        border: 1px solid var(--glass-border);
-        backdrop-filter: blur(8px) saturate(120%);
-      }
-
-      header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
-      .brand {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-      }
-      .logo {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(135deg, var(--accent), #34d399);
-        font-weight: 700;
-        color: #022;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-      }
-      h1 {
-        font-size: 20px;
-        margin: 0;
-      }
-      p.lead {
-        margin: 0;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      /* form */
-      form {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .input-row {
-        display: flex;
-        gap: 12px;
-      }
-      input[type='text'] {
-        flex: 1;
-        padding: 12px 14px;
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        background: transparent;
-        color: var(--text);
-        outline: none;
-        font-size: 15px;
-      }
-      .btn {
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: none;
-        background: var(--accent);
-        color: #052;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .btn.secondary {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        color: var(--text);
-      }
-      label.small {
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      /* controls */
-      .controls {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-      .control {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .range {
-        width: 160px;
-      }
-
-      /* preview column */
-      .preview {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-      }
-      canvas {
-        background: var(--card-white);
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
-      }
-      .actions {
-        display: flex;
-        gap: 8px;
-      }
-
-      /* history */
-      .history {
-        margin-top: 14px;
-      }
-      .history-list {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .history-item {
-        width: 56px;
-        height: 56px;
-        border-radius: 8px;
-        overflow: hidden;
-        display: grid;
-        place-items: center;
-        background: var(--glass);
-        cursor: pointer;
-        border: 1px solid rgba(255, 255, 255, 0.03);
-      }
-
-      footer {
-        margin-top: 12px;
-        color: var(--muted);
-        font-size: 13px;
-        text-align: center;
-      }
-
-      /* responsive */
-      @media (max-width: 920px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
-        .preview {
-          order: -1;
-        }
-      }
-
-      /* small touches */
-      .hint {
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .pill {
-        padding: 6px 10px;
-        background: var(--glass);
-        border-radius: 999px;
-        font-size: 13px;
-        border: 1px solid rgba(255, 255, 255, 0.02);
-      }
-
-      /* toggle */
-      .toggle {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-      .switch {
-        width: 46px;
-        height: 26px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.06);
-        padding: 3px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-      }
-      .knob {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: var(--card);
-        transition: transform 0.22s;
-      }
-      .switch.on {
-        background: linear-gradient(90deg, var(--accent), #34d399);
-      }
-      .switch.on .knob {
-        transform: translateX(20px);
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="wrap">
-      <div class="grid">
-        <!-- LEFT: main form -->
-        <div class="card" role="region" aria-label="QR generator controls">
-          <header>
-            <div class="brand">
-              <div class="logo">QR</div>
-              <div>
-                <h1>QuickQR</h1>
-                <p class="lead">
-                  Paste your link, tweak style, and download a high-quality QR.
-                </p>
-              </div>
-            </div>
+    <!-- ── BACKGROUND ORBS (decorative blobs) ── -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
 
-            <div class="toggle" title="Toggle theme">
-              <div id="themeLabel" class="hint">Dark</div>
-              <div
-                id="themeSwitch"
-                class="switch"
-                role="button"
-                aria-pressed="false"
-                tabindex="0"
-              >
-                <div class="knob"></div>
-              </div>
-            </div>
-          </header>
+    <!-- ══════════════════════════════════════
+       HEADER / NAVBAR
+  ══════════════════════════════════════ -->
+    <header class="site-header">
+      <div class="header-inner">
+        <!-- Logo -->
+        <a href="#" class="logo" aria-label="QRForge Home">
+          <span class="logo-icon">⬡</span>
+          <span class="logo-text">QR<strong>Forge</strong></span>
+        </a>
 
-          <form id="qrForm" onsubmit="return false;">
-            <label class="small" for="urlInput">URL / Text</label>
-            <div class="input-row">
+        <!-- Nav actions -->
+        <div class="header-actions">
+          <span class="badge-pill">Free Forever</span>
+
+          <!-- Dark / Light mode toggle -->
+          <button
+            class="theme-toggle"
+            id="themeToggle"
+            aria-label="Toggle dark/light mode"
+            title="Toggle theme"
+          >
+            <span class="toggle-icon sun">☀️</span>
+            <span class="toggle-icon moon">🌙</span>
+            <span class="toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════
+       HERO / INTRO
+  ══════════════════════════════════════ -->
+    <section class="hero">
+      <p class="hero-eyebrow">✦ No sign-up required</p>
+      <h1 class="hero-title">
+        Generate <span class="gradient-text">QR Codes</span><br />
+        That Actually Look Good
+      </h1>
+      <p class="hero-sub">
+        Paste a URL or any text, customize colors &amp; size, embed a logo,<br />
+        and download a crisp PNG — all in your browser, instantly.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════
+       MAIN APP CARD
+  ══════════════════════════════════════ -->
+    <main class="app-wrapper">
+      <div class="app-card glass">
+        <!-- ─── LEFT PANEL: Controls ─── -->
+        <div class="panel panel-controls">
+          <h2 class="panel-title">Configuration</h2>
+
+          <!-- Input field -->
+          <div class="field-group">
+            <label class="field-label" for="qrInput">URL or Text</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔗</span>
               <input
-                id="urlInput"
                 type="text"
-                placeholder="https://example.com or any text"
-                aria-label="URL or text to encode"
-                required
+                id="qrInput"
+                class="text-input"
+                placeholder="https://your-link.com or any text…"
+                autocomplete="off"
+                spellcheck="false"
               />
-              <button id="genBtn" class="btn" aria-label="Generate QR">
-                Generate
+              <!-- Clear button -->
+              <button
+                class="clear-btn"
+                id="clearBtn"
+                aria-label="Clear input"
+                title="Clear"
+              >
+                ✕
               </button>
             </div>
+            <p class="field-hint" id="charCount">0 characters</p>
+          </div>
 
-            <div class="controls" aria-hidden="false">
-              <div class="control">
-                <label class="small"
-                  >Size: <span id="sizeVal">300</span>px</label
+          <!-- QR Color -->
+          <div class="field-group">
+            <label class="field-label" for="qrColor">QR Code Color</label>
+            <div class="color-row">
+              <input
+                type="color"
+                id="qrColor"
+                class="color-swatch"
+                value="#00e5ff"
+              />
+              <div class="color-presets" id="colorPresets">
+                <button
+                  class="preset-dot"
+                  style="background: #00e5ff"
+                  data-color="#00e5ff"
+                  title="Cyan"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #7c3aed"
+                  data-color="#7c3aed"
+                  title="Violet"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #f43f5e"
+                  data-color="#f43f5e"
+                  title="Rose"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #10b981"
+                  data-color="#10b981"
+                  title="Emerald"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #f59e0b"
+                  data-color="#f59e0b"
+                  title="Amber"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #0f172a"
+                  data-color="#0f172a"
+                  title="Ink"
+                ></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Background Color -->
+          <div class="field-group">
+            <label class="field-label" for="bgColor">Background Color</label>
+            <div class="color-row">
+              <input
+                type="color"
+                id="bgColor"
+                class="color-swatch"
+                value="#0a0f1e"
+              />
+              <div class="color-presets">
+                <button
+                  class="preset-dot"
+                  style="background: #0a0f1e"
+                  data-color="#0a0f1e"
+                  data-target="bg"
+                  title="Dark"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #ffffff"
+                  data-color="#ffffff"
+                  data-target="bg"
+                  title="White"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #f8fafc"
+                  data-color="#f8fafc"
+                  data-target="bg"
+                  title="Off-white"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #0f172a"
+                  data-color="#0f172a"
+                  data-target="bg"
+                  title="Navy"
+                ></button>
+                <button
+                  class="preset-dot"
+                  style="background: #fef9c3"
+                  data-color="#fef9c3"
+                  data-target="bg"
+                  title="Cream"
+                ></button>
+                <button
+                  class="preset-dot transparent-dot"
+                  data-color="transparent"
+                  data-target="bg"
+                  title="Transparent"
                 >
-                <input
-                  id="sizeRange"
-                  class="range"
-                  type="range"
-                  min="120"
-                  max="800"
-                  value="300"
-                />
-              </div>
-
-              <div class="control">
-                <label class="small">Foreground</label>
-                <input
-                  id="fgColor"
-                  type="color"
-                  value="#000000"
-                  aria-label="QR foreground color"
-                />
-              </div>
-
-              <div class="control">
-                <label class="small">Background</label>
-                <input
-                  id="bgColor"
-                  type="color"
-                  value="#ffffff"
-                  aria-label="QR background color"
-                />
-              </div>
-
-              <div class="control">
-                <label class="small">Logo (optional)</label>
-                <input
-                  id="logoFile"
-                  type="file"
-                  accept="image/*"
-                  aria-label="Upload logo"
-                />
+                  ∅
+                </button>
               </div>
             </div>
+          </div>
 
-            <div style="display: flex; gap: 8px; margin-top: 8px">
-              <button id="downloadBtn" class="btn secondary" disabled>
-                Download PNG
-              </button>
-              <button id="clearBtn" class="btn secondary" type="button">
-                Clear
-              </button>
-              <div style="flex: 1"></div>
-              <button id="historyClearBtn" class="btn secondary" type="button">
-                Clear History
-              </button>
+          <!-- Size Slider -->
+          <div class="field-group">
+            <label class="field-label" for="qrSize">
+              Size
+              <span class="slider-value" id="sizeLabel">256 px</span>
+            </label>
+            <input
+              type="range"
+              id="qrSize"
+              class="slider"
+              min="128"
+              max="512"
+              step="16"
+              value="256"
+            />
+            <div class="slider-ticks">
+              <span>128</span><span>256</span><span>384</span><span>512</span>
             </div>
+          </div>
 
-            <div class="hint" style="margin-top: 10px">
-              Tip: Use <span class="pill">https://</span> links for best
-              scanning reliability. Save history will store latest QR images
-              locally in your browser.
+          <!-- Error Correction Level -->
+          <div class="field-group">
+            <label class="field-label">Error Correction</label>
+            <div class="pill-group" id="ecLevel">
+              <button class="pill" data-ec="L">L — Low</button>
+              <button class="pill active" data-ec="M">M — Med</button>
+              <button class="pill" data-ec="Q">Q — High</button>
+              <button class="pill" data-ec="H">H — Max</button>
             </div>
+            <p class="field-hint">
+              Higher = more resilient, needed for logo overlay
+            </p>
+          </div>
 
-            <div class="history" aria-live="polite">
-              <label class="small">History</label>
-              <div id="historyList" class="history-list"></div>
-            </div>
-          </form>
+          <!-- Logo Upload -->
+          <div class="field-group">
+            <label class="field-label"
+              >Logo Overlay <span class="optional-tag">optional</span></label
+            >
+            <label class="upload-zone" id="uploadZone" for="logoUpload">
+              <span class="upload-icon">📁</span>
+              <span class="upload-text" id="uploadText"
+                >Click or drag &amp; drop an image</span
+              >
+              <input type="file" id="logoUpload" accept="image/*" hidden />
+            </label>
+            <button
+              class="remove-logo-btn"
+              id="removeLogoBtn"
+              style="display: none"
+            >
+              ✕ Remove logo
+            </button>
+          </div>
 
-          <footer>
-            Made for <strong>Chetan</strong> • Host on GitHub Pages / Vercel
-          </footer>
+          <!-- Generate button -->
+          <button class="btn-generate" id="generateBtn">
+            <span class="btn-label">Generate QR Code</span>
+            <span class="btn-arrow">→</span>
+          </button>
         </div>
 
-        <!-- RIGHT: preview -->
-        <div class="preview card" role="region" aria-label="QR preview">
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              gap: 8px;
-            "
-          >
-            <div class="hint">Preview</div>
-            <canvas
-              id="qrCanvas"
-              width="300"
-              height="300"
-              aria-label="QR preview canvas"
-            ></canvas>
+        <!-- ─── RIGHT PANEL: Preview ─── -->
+        <div class="panel panel-preview">
+          <h2 class="panel-title">Preview</h2>
+
+          <!-- QR Output area -->
+          <div class="qr-stage" id="qrStage">
+            <!-- Empty state -->
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon">⬡</div>
+              <p>Your QR code will appear here</p>
+            </div>
+
+            <!-- QR canvas injected here by JS -->
+            <div id="qrOutput" class="qr-output" style="display: none"></div>
+
+            <!-- Loading spinner -->
+            <div class="spinner" id="spinner" style="display: none">
+              <div class="spinner-ring"></div>
+            </div>
           </div>
 
-          <div class="actions">
-            <button id="openBtn" class="btn secondary" disabled>
-              Open Image
+          <!-- Download / Copy actions -->
+          <div class="action-row" id="actionRow" style="display: none">
+            <button class="btn-action btn-download" id="downloadBtn">
+              ⬇ Download PNG
             </button>
-            <button id="downloadBtn2" class="btn" disabled>Download</button>
+            <button class="btn-action btn-copy" id="copyBtn">
+              ⧉ Copy Image
+            </button>
           </div>
 
-          <div class="hint" style="margin-top: 6px">
-            You can click "Download" to save a PNG. Logo will be centered and
-            scaled automatically.
+          <!-- QR Data info pill -->
+          <div class="qr-meta" id="qrMeta" style="display: none">
+            <span id="qrMetaText"></span>
           </div>
         </div>
       </div>
-    </div>
 
-    <script>
-      // --- helpers ---
-      const $ = (id) => document.getElementById(id);
-      const urlInput = $('urlInput');
-      const genBtn = $('genBtn');
-      const sizeRange = $('sizeRange');
-      const sizeVal = $('sizeVal');
-      const fgColor = $('fgColor');
-      const bgColor = $('bgColor');
-      const logoFile = $('logoFile');
-      const qrCanvas = $('qrCanvas');
-      const downloadBtn = $('downloadBtn');
-      const downloadBtn2 = $('downloadBtn2');
-      const openBtn = $('openBtn');
-      const historyList = $('historyList');
-      const clearBtn = $('clearBtn');
-      const historyClearBtn = $('historyClearBtn');
+      <!-- ══════════════════════════════════════
+         HISTORY SECTION
+    ══════════════════════════════════════ -->
+      <section
+        class="history-section"
+        id="historySection"
+        style="display: none"
+      >
+        <div class="history-header">
+          <h2 class="history-title">Recent QR Codes</h2>
+          <button class="clear-history-btn" id="clearHistoryBtn">
+            Clear all
+          </button>
+        </div>
+        <div class="history-grid" id="historyGrid">
+          <!-- History items injected by JS -->
+        </div>
+      </section>
+    </main>
 
-      // theme toggle
-      const themeSwitch = $('themeSwitch');
-      const themeLabel = $('themeLabel');
-      const root = document.documentElement;
-      let isLight = false;
+    <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+    <footer class="site-footer">
+      <p>
+        Built with ❤️ · No data leaves your browser · <strong>QRForge</strong>
+      </p>
+    </footer>
 
-      function applyTheme() {
-        if (isLight) {
-          document.body.classList.add('light');
-          themeSwitch.classList.add('on');
-          themeLabel.textContent = 'Light';
-          themeSwitch.setAttribute('aria-pressed', 'true');
-        } else {
-          document.body.classList.remove('light');
-          themeSwitch.classList.remove('on');
-          themeLabel.textContent = 'Dark';
-          themeSwitch.setAttribute('aria-pressed', 'false');
-        }
-      }
-      themeSwitch.addEventListener('click', () => {
-        isLight = !isLight;
-        applyTheme();
-      });
-      themeSwitch.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          isLight = !isLight;
-          applyTheme();
-          e.preventDefault();
-        }
-      });
-      applyTheme();
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
 
-      // update size label
-      sizeRange.addEventListener('input', () => {
-        sizeVal.textContent = sizeRange.value;
-        qrCanvas.width = qrCanvas.height = parseInt(sizeRange.value);
-      });
-
-      function dataURLFromAPI(text, size, fg, bg) {
-        // qrserver expects hex without # for color params
-        const fgHex = fg.replace('#', '');
-        const bgHex = bg.replace('#', '');
-        const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&color=${fgHex}&bgcolor=${bgHex}&margin=0&data=${encodeURIComponent(text)}`;
-        return url;
-      }
-
-      async function loadImage(src) {
-        return new Promise((res, rej) => {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => res(img);
-          img.onerror = (e) => rej(e);
-          img.src = src;
-        });
-      }
-
-      async function generate() {
-        const text = urlInput.value.trim();
-        if (!text) {
-          alert('Please enter a URL or text');
-          urlInput.focus();
-          return;
-        }
-        const size = parseInt(sizeRange.value);
-        const fg = fgColor.value;
-        const bg = bgColor.value;
-        const apiURL = dataURLFromAPI(text, size, fg, bg);
-
-        try {
-          const qrImg = await loadImage(apiURL);
-          // draw on canvas
-          const ctx = qrCanvas.getContext('2d');
-          qrCanvas.width = qrCanvas.height = size;
-          // fill background
-          ctx.fillStyle = bg;
-          ctx.fillRect(0, 0, size, size);
-          // draw QR
-          ctx.drawImage(qrImg, 0, 0, size, size);
-
-          // if logo provided, draw it centered
-          if (logoFile.files && logoFile.files[0]) {
-            const file = logoFile.files[0];
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-              try {
-                const logoImg = await loadImage(ev.target.result);
-                // scale logo to 18% of size (tweakable)
-                const logoSize = Math.floor(size * 0.18);
-                const x = (size - logoSize) / 2;
-                const y = (size - logoSize) / 2;
-
-                // draw a white rounded background for logo for contrast
-                const r = 8; // corner radius
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                roundRect(
-                  ctx,
-                  x - 6,
-                  y - 6,
-                  logoSize + 12,
-                  logoSize + 12,
-                  r + 4,
-                );
-                ctx.fill();
-
-                // draw the logo
-                ctx.drawImage(logoImg, x, y, logoSize, logoSize);
-
-                finishAndSaveToHistory(text);
-              } catch (err) {
-                console.error('logo load failed', err);
-                finishAndSaveToHistory(text);
-              }
-            };
-            reader.readAsDataURL(file);
-          } else {
-            finishAndSaveToHistory(text);
-          }
-        } catch (err) {
-          console.error(err);
-          alert('Failed to generate QR — check console for details');
-        }
-      }
-
-      function finishAndSaveToHistory(text) {
-        // enable download buttons
-        downloadBtn.disabled = false;
-        downloadBtn2.disabled = false;
-        openBtn.disabled = false;
-        // save small thumbnail + text in localStorage
-        try {
-          const dataURL = qrCanvas.toDataURL('image/png');
-          const item = { text, ts: Date.now(), img: dataURL };
-          const hist = JSON.parse(
-            localStorage.getItem('quickqr.history') || '[]',
-          );
-          hist.unshift(item);
-          // limit to 12 items
-          localStorage.setItem(
-            'quickqr.history',
-            JSON.stringify(hist.slice(0, 12)),
-          );
-          renderHistory();
-        } catch (e) {
-          console.warn('history save failed', e);
-        }
-      }
-
-      function roundRect(ctx, x, y, w, h, r) {
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + w, y, x + w, y + h, r);
-        ctx.arcTo(x + w, y + h, x, y + h, r);
-        ctx.arcTo(x, y + h, x, y, r);
-        ctx.arcTo(x, y, x + w, y, r);
-        ctx.closePath();
-      }
-
-      // download handler
-      function downloadImage(filename = 'quickqr.png') {
-        const a = document.createElement('a');
-        a.href = qrCanvas.toDataURL('image/png');
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      }
-
-      // open in new tab
-      function openImageInTab() {
-        const data = qrCanvas.toDataURL('image/png');
-        const w = window.open('about:blank', '_blank');
-        if (w) {
-          w.document.write(`<img src="${data}" alt="QR"/>`);
-          w.document.title = 'QuickQR — QR Image';
-        } else alert('Popup blocked — allow popups to preview.');
-      }
-
-      // history UI
-      function renderHistory() {
-        historyList.innerHTML = '';
-        const hist = JSON.parse(
-          localStorage.getItem('quickqr.history') || '[]',
-        );
-        hist.forEach((it, idx) => {
-          const el = document.createElement('div');
-          el.className = 'history-item';
-          el.title = it.text;
-          el.innerHTML = `<img src="${it.img}" style="width:100%;height:100%;object-fit:cover">`;
-          el.addEventListener('click', () => {
-            // populate value and show on canvas
-            urlInput.value = it.text;
-            // draw it into canvas
-            const img = new Image();
-            img.src = it.img;
-            img.onload = () => {
-              const ctx = qrCanvas.getContext('2d');
-              qrCanvas.width = qrCanvas.height = img.width;
-              ctx.drawImage(img, 0, 0);
-              downloadBtn.disabled = false;
-              downloadBtn2.disabled = false;
-              openBtn.disabled = false;
-            };
-          });
-
-          historyList.appendChild(el);
-        });
-      }
-
-      // clear functions
-      function clearCanvas() {
-        const ctx = qrCanvas.getContext('2d');
-        ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
-        downloadBtn.disabled = true;
-        downloadBtn2.disabled = true;
-        openBtn.disabled = true;
-      }
-      function clearForm() {
-        urlInput.value = '';
-        logoFile.value = '';
-        fgColor.value = '#000000';
-        bgColor.value = '#ffffff';
-        sizeRange.value = 300;
-        sizeVal.textContent = 300;
-        clearCanvas();
-      }
-      function clearHistory() {
-        localStorage.removeItem('quickqr.history');
-        renderHistory();
-      }
-
-      // wire buttons
-      genBtn.addEventListener('click', generate);
-      downloadBtn.addEventListener('click', () => downloadImage('quickqr.png'));
-      downloadBtn2.addEventListener('click', () =>
-        downloadImage('quickqr.png'),
-      );
-      openBtn.addEventListener('click', openImageInTab);
-      clearBtn.addEventListener('click', clearForm);
-      historyClearBtn.addEventListener('click', () => {
-        if (confirm('Clear saved history?')) clearHistory();
-      });
-
-      // init
-      (function () {
-        sizeVal.textContent = sizeRange.value;
-        qrCanvas.width = qrCanvas.height = parseInt(sizeRange.value);
-        renderHistory();
-      })();
-
-      // small accessibility: enter to generate
-      urlInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          generate();
-          e.preventDefault();
-        }
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
