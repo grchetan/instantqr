@@ -1,361 +1,930 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QRForge — Professional QR Code Generator</title>
+    <title>QuickQR — Instantly Generate QR Codes, Free & No Sign In</title>
     <meta
       name="description"
-      content="Generate beautiful, customizable QR codes instantly. Free, fast, and privacy-first."
+      content="Convert any link or text to a QR code in seconds. Fast, simple and 100% free. No sign in required."
     />
 
-    <!-- Google Fonts: Display + Body pairing -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
-    <!-- QRCode.js library from CDN -->
+    <!-- QRCode.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <link rel="stylesheet" href="style.css" />
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <!-- ── BACKGROUND ORBS (decorative blobs) ── -->
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
-
-    <!-- ══════════════════════════════════════
-       HEADER / NAVBAR
-  ══════════════════════════════════════ -->
-    <header class="site-header">
-      <div class="header-inner">
+    <!-- =============================================
+       NAVBAR
+       ============================================= -->
+    <header class="navbar" id="navbar">
+      <div class="container nav-container">
         <!-- Logo -->
-        <a href="#" class="logo" aria-label="QRForge Home">
-          <span class="logo-icon">⬡</span>
-          <span class="logo-text">Quick<strong>QR</strong></span>
+        <a href="#" class="nav-logo" aria-label="QuickQR Home">
+          <div class="logo-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="3"
+                y="3"
+                width="7"
+                height="7"
+                rx="1.5"
+                fill="currentColor"
+              />
+              <rect
+                x="14"
+                y="3"
+                width="7"
+                height="7"
+                rx="1.5"
+                fill="currentColor"
+              />
+              <rect
+                x="3"
+                y="14"
+                width="7"
+                height="7"
+                rx="1.5"
+                fill="currentColor"
+              />
+              <rect
+                x="14"
+                y="14"
+                width="3"
+                height="3"
+                rx=".5"
+                fill="currentColor"
+              />
+              <rect
+                x="18"
+                y="14"
+                width="3"
+                height="3"
+                rx=".5"
+                fill="currentColor"
+              />
+              <rect
+                x="14"
+                y="18"
+                width="3"
+                height="3"
+                rx=".5"
+                fill="currentColor"
+              />
+              <rect
+                x="18"
+                y="18"
+                width="3"
+                height="3"
+                rx=".5"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <span class="logo-text">QuickQR</span>
         </a>
 
-        <!-- Nav actions -->
-        <div class="header-actions">
-          <span class="badge-pill">Free Forever</span>
+        <!-- Nav links removed -->
 
-          <!-- Dark / Light mode toggle -->
+        <!-- Right Side Controls -->
+        <div class="nav-actions">
+          <!-- Dark/Light Toggle -->
           <button
             class="theme-toggle"
-            id="themeToggle"
-            aria-label="Toggle dark/light mode"
+            id="theme-toggle"
+            aria-label="Toggle dark mode"
             title="Toggle theme"
           >
-            <span class="toggle-icon sun">☀️</span>
-            <span class="toggle-icon moon">🌙</span>
-            <span class="toggle-thumb"></span>
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+              <span class="icon-sun" aria-hidden="true">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                >
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              </span>
+              <span class="icon-moon" aria-hidden="true">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                </svg>
+              </span>
+            </span>
+          </button>
+
+          <!-- Get Started button removed per user request -->
+
+          <!-- Mobile hamburger -->
+          <button
+            class="hamburger"
+            id="hamburger"
+            aria-label="Toggle mobile menu"
+            aria-expanded="false"
+          >
+            <span></span><span></span><span></span>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- ══════════════════════════════════════
-       HERO / INTRO
-  ══════════════════════════════════════ -->
-    <section class="hero">
-      <p class="hero-eyebrow">✦ No sign-up required</p>
-      <h1 class="hero-title">
-        Generate <span class="gradient-text">QR Codes</span><br />
-        That Actually Look Good
-      </h1>
-      <p class="hero-sub">
-        Paste a URL or any text, customize colors &amp; size, embed a logo,<br />
-        and download a crisp PNG — all in your browser, instantly.
-      </p>
-    </section>
+    <main>
+      <!-- =============================================
+         HERO SECTION
+         ============================================= -->
+      <section class="hero" id="hero">
+        <div class="container hero-container">
+          <!-- Hero Left -->
+          <div class="hero-left">
+            <div class="hero-badge">
+              <span class="badge-dot"></span>
+              100% FREE • NO SIGN IN REQUIRED • FREE TO USE
+            </div>
 
-    <!-- ══════════════════════════════════════
-       MAIN APP CARD
-  ══════════════════════════════════════ -->
-    <main class="app-wrapper">
-      <div class="app-card glass">
-        <!-- ─── LEFT PANEL: Controls ─── -->
-        <div class="panel panel-controls">
-          <h2 class="panel-title">Configuration</h2>
+            <h1 class="hero-title">
+              Link to QR,<br />
+              <span class="gradient-text">Instantly Ready!</span>
+              <span class="title-spark" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2L13.5 9H21L15 13.5L17.5 21L12 16.5L6.5 21L9 13.5L3 9H10.5L12 2Z" fill="#7c3aed" opacity=".7"/>
+                </svg>
+              </span>
+              <!-- Curved underline under 'Ready!' -->
+              <span class="title-curve-wrap" aria-hidden="true">
+                <svg class="title-curve" viewBox="0 0 320 18" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <path d="M4 12 C60 3, 130 16, 200 8 C250 2, 290 14, 316 8" stroke="url(#curveGrad)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                  <defs>
+                    <linearGradient id="curveGrad" x1="0" y1="0" x2="320" y2="0" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#7c3aed"/>
+                      <stop offset="100%" stop-color="#06b6d4"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>
+            </h1>
 
-          <!-- Input field -->
-          <div class="field-group">
-            <label class="field-label" for="qrInput">URL or Text</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔗</span>
-              <input
-                type="text"
-                id="qrInput"
-                class="text-input"
-                placeholder="https://your-link.com or any text…"
-                autocomplete="off"
-                spellcheck="false"
-              />
-              <!-- Clear button -->
-              <button
-                class="clear-btn"
-                id="clearBtn"
-                aria-label="Clear input"
-                title="Clear"
-              >
-                ✕
+            <p class="hero-subtitle">
+              Convert any link or text into a QR code in seconds.<br />
+              Fast, simple and 100% free — no sign in required.
+            </p>
+
+            <!-- QR Input + Button -->
+            <div class="hero-input-row">
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+                    />
+                    <path
+                      d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="url"
+                  id="url-input"
+                  class="url-input"
+                  placeholder="https://yourwebsite.com"
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-label="Enter URL to generate QR code"
+                />
+              </div>
+              <button class="btn btn-primary generate-btn" id="generate-btn">
+                Generate QR
+                <span class="btn-sparkle" aria-hidden="true">✦</span>
               </button>
             </div>
-            <p class="field-hint" id="charCount">0 characters</p>
-          </div>
 
-          <!-- QR Color -->
-          <div class="field-group">
-            <label class="field-label" for="qrColor">QR Code Color</label>
-            <div class="color-row">
-              <input
-                type="color"
-                id="qrColor"
-                class="color-swatch"
-                value="#00e5ff"
-              />
-              <div class="color-presets" id="colorPresets">
-                <button
-                  class="preset-dot"
-                  style="background: #00e5ff"
-                  data-color="#00e5ff"
-                  title="Cyan"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #7c3aed"
-                  data-color="#7c3aed"
-                  title="Violet"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #f43f5e"
-                  data-color="#f43f5e"
-                  title="Rose"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #10b981"
-                  data-color="#10b981"
-                  title="Emerald"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #f59e0b"
-                  data-color="#f59e0b"
-                  title="Amber"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #0f172a"
-                  data-color="#0f172a"
-                  title="Ink"
-                ></button>
-              </div>
+            <!-- Trust badges -->
+            <div class="trust-badges">
+              <span class="badge-item">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="#f59e0b"
+                  aria-hidden="true"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                Instant Generation
+              </span>
+              <span class="badge-item">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#7c3aed"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                Secure & Safe
+              </span>
+              <span class="badge-item">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10b981"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="9 11 12 14 22 4" />
+                  <path
+                    d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"
+                  />
+                </svg>
+                High Quality
+              </span>
+              <span class="badge-item">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#06b6d4"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="3" height="3" rx=".5" />
+                  <rect x="18" y="14" width="3" height="3" rx=".5" />
+                  <rect x="14" y="18" width="3" height="3" rx=".5" />
+                  <rect x="18" y="18" width="3" height="3" rx=".5" />
+                </svg>
+                100% Free
+              </span>
             </div>
           </div>
 
-          <!-- Background Color -->
-          <div class="field-group">
-            <label class="field-label" for="bgColor">Background Color</label>
-            <div class="color-row">
-              <input
-                type="color"
-                id="bgColor"
-                class="color-swatch"
-                value="#0a0f1e"
-              />
-              <div class="color-presets">
-                <button
-                  class="preset-dot"
-                  style="background: #0a0f1e"
-                  data-color="#0a0f1e"
-                  data-target="bg"
-                  title="Dark"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #ffffff"
-                  data-color="#ffffff"
-                  data-target="bg"
-                  title="White"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #f8fafc"
-                  data-color="#f8fafc"
-                  data-target="bg"
-                  title="Off-white"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #0f172a"
-                  data-color="#0f172a"
-                  data-target="bg"
-                  title="Navy"
-                ></button>
-                <button
-                  class="preset-dot"
-                  style="background: #fef9c3"
-                  data-color="#fef9c3"
-                  data-target="bg"
-                  title="Cream"
-                ></button>
-                <button
-                  class="preset-dot transparent-dot"
-                  data-color="transparent"
-                  data-target="bg"
-                  title="Transparent"
+          <!-- Hero Right — QR Preview Card -->
+          <div class="hero-right">
+            <!-- Large decorative gradient background sphere -->
+            <div class="hero-bg-sphere" aria-hidden="true"></div>
+
+            <!-- Dashed curved arrow from left to right -->
+            <div class="hero-dashed-arrow" aria-hidden="true">
+              <svg width="90" height="60" viewBox="0 0 90 60" fill="none">
+                <path d="M10 50 C30 50, 50 10, 80 15" stroke="#7c3aed" stroke-width="2" stroke-dasharray="5 4" fill="none" stroke-linecap="round"/>
+                <polyline points="73 8 81 15 74 22" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
+            <!-- Floating decorative dots -->
+            <div class="hero-blob" aria-hidden="true"></div>
+
+            <div class="qr-preview-card" id="qr-preview-card">
+              <!-- Floating link icon top-left -->
+              <div class="floating-icon icon-top-left" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 >
-                  ∅
+                  <path
+                    d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+                  />
+                  <path
+                    d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
+                  />
+                </svg>
+              </div>
+
+              <!-- Sparkle decorations -->
+              <span class="sparkle sp1" aria-hidden="true">✦</span>
+              <span class="sparkle sp2" aria-hidden="true">✦</span>
+
+              <!-- QR Code display area -->
+              <div class="qr-display" id="qr-display">
+                <!-- Placeholder state -->
+                <div class="qr-placeholder" id="qr-placeholder">
+                  <div class="qr-placeholder-grid" aria-hidden="true">
+                    <div class="ph-corner ph-tl"></div>
+                    <div class="ph-dots"></div>
+                    <div class="ph-corner ph-tr"></div>
+                    <div class="ph-mid"></div>
+                    <div class="ph-corner ph-bl"></div>
+                    <div class="ph-dots"></div>
+                    <div class="ph-corner ph-br-half"></div>
+                  </div>
+                  <div class="qr-center-icon" aria-hidden="true">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+                      />
+                      <path
+                        d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <!-- Actual QR goes here -->
+                <div id="qr-canvas" class="qr-canvas"></div>
+              </div>
+
+              <!-- Action buttons on card -->
+              <div class="qr-card-actions">
+                <button
+                  class="btn btn-primary download-btn"
+                  id="download-btn"
+                  disabled
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Download QR
+                </button>
+                <button
+                  class="btn btn-share"
+                  id="share-btn"
+                  aria-label="Share QR code"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                  </svg>
                 </button>
               </div>
             </div>
-          </div>
 
-          <!-- Size Slider -->
-          <div class="field-group">
-            <label class="field-label" for="qrSize">
-              Size
-              <span class="slider-value" id="sizeLabel">256 px</span>
-            </label>
-            <input
-              type="range"
-              id="qrSize"
-              class="slider"
-              min="128"
-              max="512"
-              step="16"
-              value="256"
-            />
-            <div class="slider-ticks">
-              <span>128</span><span>256</span><span>384</span><span>512</span>
-            </div>
-          </div>
-
-          <!-- Error Correction Level -->
-          <div class="field-group">
-            <label class="field-label">Error Correction</label>
-            <div class="pill-group" id="ecLevel">
-              <button class="pill" data-ec="L">L — Low</button>
-              <button class="pill active" data-ec="M">M — Med</button>
-              <button class="pill" data-ec="Q">Q — High</button>
-              <button class="pill" data-ec="H">H — Max</button>
-            </div>
-            <p class="field-hint">
-              Higher = more resilient, needed for logo overlay
-            </p>
-          </div>
-
-          <!-- Logo Upload -->
-          <div class="field-group">
-            <label class="field-label"
-              >Logo Overlay <span class="optional-tag">optional</span></label
-            >
-            <label class="upload-zone" id="uploadZone" for="logoUpload">
-              <span class="upload-icon">📁</span>
-              <span class="upload-text" id="uploadText"
-                >Click or drag &amp; drop an image</span
+            <!-- Floating scan icon -->
+            <div class="floating-scan-icon" aria-hidden="true">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
               >
-              <input type="file" id="logoUpload" accept="image/*" hidden />
-            </label>
-            <button
-              class="remove-logo-btn"
-              id="removeLogoBtn"
-              style="display: none"
-            >
-              ✕ Remove logo
-            </button>
-          </div>
-
-          <!-- Generate button -->
-          <button class="btn-generate" id="generateBtn">
-            <span class="btn-label">Generate QR Code</span>
-            <span class="btn-arrow">→</span>
-          </button>
-        </div>
-
-        <!-- ─── RIGHT PANEL: Preview ─── -->
-        <div class="panel panel-preview">
-          <h2 class="panel-title">Preview</h2>
-
-          <!-- QR Output area -->
-          <div class="qr-stage" id="qrStage">
-            <!-- Empty state -->
-            <div class="empty-state" id="emptyState">
-              <div class="empty-icon">⬡</div>
-              <p>Your QR code will appear here</p>
-            </div>
-
-            <!-- QR canvas injected here by JS -->
-            <div id="qrOutput" class="qr-output" style="display: none"></div>
-
-            <!-- Loading spinner -->
-            <div class="spinner" id="spinner" style="display: none">
-              <div class="spinner-ring"></div>
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="3" height="3" rx=".5" />
+                <rect x="18" y="14" width="3" height="3" rx=".5" />
+                <rect x="14" y="18" width="3" height="3" rx=".5" />
+                <rect x="18" y="18" width="3" height="3" rx=".5" />
+              </svg>
             </div>
           </div>
-
-          <!-- Download / Copy actions -->
-          <div class="action-row" id="actionRow" style="display: none">
-            <button class="btn-action btn-download" id="downloadBtn">
-              ⬇ Download PNG
-            </button>
-            <button class="btn-action btn-copy" id="copyBtn">
-              ⧉ Copy Image
-            </button>
-          </div>
-
-          <!-- QR Data info pill -->
-          <div class="qr-meta" id="qrMeta" style="display: none">
-            <span id="qrMetaText"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════════════════════════
-         HISTORY SECTION
-    ══════════════════════════════════════ -->
-      <section
-        class="history-section"
-        id="historySection"
-        style="display: none"
-      >
-        <div class="history-header">
-          <h2 class="history-title">Recent QR Codes</h2>
-          <button class="clear-history-btn" id="clearHistoryBtn">
-            Clear all
-          </button>
-        </div>
-        <div class="history-grid" id="historyGrid">
-          <!-- History items injected by JS -->
         </div>
       </section>
+
+      <!-- =============================================
+         STATS BAR
+         ============================================= -->
+      <section class="stats-bar" id="stats">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-icon stat-icon--purple" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <strong class="stat-value">1M+</strong>
+                <span class="stat-label">QR Codes Generated</span>
+              </div>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+              <div class="stat-icon stat-icon--green" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                  <path d="M16 3.13a4 4 0 010 7.75" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <strong class="stat-value">500K+</strong>
+                <span class="stat-label">Happy Users</span>
+              </div>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+              <div class="stat-icon stat-icon--yellow" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <strong class="stat-value">0 Sec</strong>
+                <span class="stat-label">Average Generation</span>
+              </div>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+              <div class="stat-icon stat-icon--blue" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <strong class="stat-value">100%</strong>
+                <span class="stat-label">Secure & Free</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================
+         HOW IT WORKS
+         ============================================= -->
+      <section class="how-it-works" id="how-it-works">
+        <div class="container">
+          <div class="section-header">
+            <p class="section-eyebrow">HOW IT WORKS</p>
+            <h2 class="section-title">
+              It's Super <span class="gradient-text">Simple!</span>
+              <span class="title-star" aria-hidden="true">✦</span>
+            </h2>
+          </div>
+
+          <div class="steps-row">
+            <!-- Step 1 -->
+            <div class="step-card">
+              <div class="step-number">01</div>
+              <div class="step-icon-wrap">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+                  />
+                  <path
+                    d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
+                  />
+                </svg>
+              </div>
+              <h3 class="step-title">Paste Your Link</h3>
+              <p class="step-desc">Paste any website link or text you want to convert.</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="step-arrow" aria-hidden="true">
+              <svg width="60" height="24" viewBox="0 0 80 24" fill="none">
+                <path
+                  d="M0 12 Q20 4 40 12 Q60 20 80 12"
+                  stroke="#7c3aed"
+                  stroke-width="2"
+                  stroke-dasharray="5 4"
+                  fill="none"
+                />
+                <polyline
+                  points="72 6 80 12 72 18"
+                  stroke="#7c3aed"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+              <div class="step-number">02</div>
+              <div class="step-icon-wrap">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="3" height="3" rx=".5" />
+                  <rect x="18" y="14" width="3" height="3" rx=".5" />
+                  <rect x="14" y="18" width="3" height="3" rx=".5" />
+                  <rect x="18" y="18" width="3" height="3" rx=".5" />
+                </svg>
+              </div>
+              <h3 class="step-title">Generate QR</h3>
+              <p class="step-desc">
+                Click the Generate QR button to instantly create your QR code.
+              </p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="step-arrow" aria-hidden="true">
+              <svg width="60" height="24" viewBox="0 0 80 24" fill="none">
+                <path
+                  d="M0 12 Q20 20 40 12 Q60 4 80 12"
+                  stroke="#7c3aed"
+                  stroke-width="2"
+                  stroke-dasharray="5 4"
+                  fill="none"
+                />
+                <polyline
+                  points="72 6 80 12 72 18"
+                  stroke="#7c3aed"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card step-card--accent">
+              <div class="step-number">03</div>
+              <div class="step-icon-wrap">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </div>
+              <h3 class="step-title">Download & Use</h3>
+              <p class="step-desc">
+                Download your QR code and use it anywhere you like.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================
+         FEATURES / WHY CHOOSE
+         ============================================= -->
+      <section class="features" id="features">
+        <div class="container">
+          <div class="section-header">
+            <p class="section-eyebrow section-eyebrow--light">
+              WHY CHOOSE QUICKQR?
+            </p>
+            <h2 class="section-title section-title--light">
+              Fast. Simple. <span class="gradient-text">Reliable.</span>
+            </h2>
+          </div>
+
+          <div class="features-grid">
+            <!-- Feature 1 -->
+            <div class="feature-card">
+              <div class="feature-icon feature-icon--yellow" aria-hidden="true">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <div class="feature-content">
+                <h3 class="feature-title">Super Fast</h3>
+                <p class="feature-desc">
+                  Instant QR generation in just one click.
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card">
+              <div class="feature-icon feature-icon--green" aria-hidden="true">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <div class="feature-content">
+                <h3 class="feature-title">Secure & Safe</h3>
+                <p class="feature-desc">
+                  Your links are 100% safe. We only generate the QR — nothing stored.
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card">
+              <div class="feature-icon feature-icon--purple" aria-hidden="true">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                  <line x1="12" y1="18" x2="12.01" y2="18" />
+                </svg>
+              </div>
+              <div class="feature-content">
+                <h3 class="feature-title">Mobile Friendly</h3>
+                <p class="feature-desc">
+                  Works perfectly on every device — phone, tablet or desktop.
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card">
+              <div class="feature-icon feature-icon--blue" aria-hidden="true">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <div class="feature-content">
+                <h3 class="feature-title">High Quality</h3>
+                <p class="feature-desc">
+                  High-resolution QR codes — perfect for print and digital use.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================
+         CTA BANNER
+         ============================================= -->
+      <section class="cta-banner" id="pricing">
+        <div class="container">
+          <div class="cta-card">
+            <div class="cta-content">
+              <div class="cta-icon" aria-hidden="true">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <div>
+                <h2 class="cta-title">Ready to make your link</h2>
+                <h2 class="cta-title">QR in Seconds?</h2>
+              </div>
+            </div>
+            <a href="#hero" class="btn btn-cta">
+              Get Started Now
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+            <!-- Decorative paper plane -->
+            <div class="cta-plane" aria-hidden="true">
+              <svg
+                width="80"
+                height="80"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================
+         FAQ (placeholder section for nav)
+         ============================================= -->
+      <div
+        id="faq"
+        style="height: 0; overflow: hidden"
+        aria-hidden="true"
+      ></div>
+      <div
+        id="contact"
+        style="height: 0; overflow: hidden"
+        aria-hidden="true"
+      ></div>
     </main>
 
-    <!-- ══════════════════════════════════════
-       FOOTER
-  ══════════════════════════════════════ -->
-    <footer class="site-footer">
-      <p>
-        Built with
-        <a
-          href="https://grchetan.github.io/sitereadypro"
-          target="_blank"
-          style="color: white; text-decoration: none"
-          >sitereadypro</a
-        >
-        · No data leaves your browser ·
-        <strong>QuickQR</strong>
-      </p>
+    <!-- =============================================
+       FOOTER — minimal single bar
+       ============================================= -->
+    <footer class="footer footer--minimal">
+      <div class="container">
+        <div class="footer-minimal-bar">
+          <p>© <span id="footer-year"></span> QuickQR. All rights reserved.</p>
+          <a
+            href="https://github.com/grchetan"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+            aria-label="GitHub profile of grchetan"
+          >
+            <!-- GitHub icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483
+                0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608
+                1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338
+                -2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65
+                0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337
+                1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651
+                .64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943
+                .359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747
+                0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+            <span>grchetan</span>
+          </a>
+        </div>
+      </div>
     </footer>
 
-    <!-- Toast notification -->
-    <div class="toast" id="toast"></div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="script.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
   </body>
 </html>
